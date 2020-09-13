@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Form</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
+        <!-- Style CSS -->
+        <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+        <style>
+        #fade {
+            display: none;
+            position:absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: #1c273a;
+            z-index: 1001;
+        }
+
+        #modal {
+            display: none;
+            position: absolute;
+            width: 100%;
+            margin-top: -5%;
+            margin-left: -2%;
+            z-index: 1002;
+            text-align:center;
+            overflow: auto;
+        }
+
+        </style>
+
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type=text/javascript>
+
+                $(function() {
+        $('#upload-file-btn').click(function() {
+                var form_data = new FormData($('#contact')[0]);
+                $.ajax({
+                type: 'POST',
+                beforeSend: function(){
+                  document.getElementById('modal').style.display = 'block';
+                  document.getElementById('fade').style.display = 'block';
+                },
+                url: '/image/upload',
+                data: form_data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function(data) {
+                        document.getElementById('contact_name').value=data['fields']['Name'];
+                        document.getElementById('contact_Gender').value=data['fields']['Gender'];
+                        document.getElementById('contact_Aadhar no').value=data['fields']['Aadhar No'];
+                        document.getElementById('contact_dob').value=data['fields']['Date of Birth'];
+
+                    },
+                complete: function(){
+                  document.getElementById('modal').style.display = 'none';
+                  document.getElementById('fade').style.display = 'none';
+                }
+
+                });
+            });
+        });
+        </script>
+
+    </head>
+    <body background>
+        <section class="iq-form pt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 iq-mtb-15">
+                        <h3 class="text-center mb-5">Smart_KYC</h3>
+                        <form id="contact" method="post" enctype="multipart/form-data">
+                            <div class="contact-form">
+                                <div class="section-field mb-4 ">
+                                    Front Side: <input type="file" name="photo-front" class="form-control-file mb-0" id="file1"><br>
+                                    Back Side: <input type="file" name="photo-back" class="form-control-file mb-0" id="file2"><br>
+                                    <a href="#" id ="upload-file-btn" class="button float-right">Test</a>
+                                </div>
+                                <div id="fade"></div>
+                                <div id ="modal">
+                                  <img src="{{ url_for('static',filename='load.gif') }}" >
+                                </div>
+                                <div class="section-field mt-2">
+                                    <label for="formGroupExampleInput">Name:</label>
+                                    <input class="require" id="contact_name" type="text" placeholder="" name="name">
+                                </div>
+                                <div class="section-field mt-2">
+                                    <label for="formGroupExampleInput">Gender:</label>
+                                    <input class="require" id="contact_Gender" type="email" placeholder="" name="Gender">
+                                </div>
+                                <div class="section-field mt-2">
+                                    <label for="formGroupExampleInput">DOB:</label>
+                                    <input class="require" id="contact_dob" type="email" placeholder="" name="dob">
+                                </div>
+                                <div class="section-field mt-2">
+                                    <label for="formGroupExampleInput">Aadhar no.:</label>
+                                    <input class="require" id="contact_Aadhar no" type="text" placeholder="" name="Aadhar no">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <a href="{{ url_for('face_detect_live') }}" class="btn btn-outline-dark">Click here for live facial recognition with Web Camera! (press 'q' key to quit)</a>
+            </div>
+        </section>
+
+
+    </body>
+</html>

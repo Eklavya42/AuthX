@@ -1,9 +1,26 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Face Recognition</title>
-  </head>
-  <body>
-    <h1>Face Recognition Stream</h1>
-    <img id="bg" src="{{ url_for('video_feed') }}">
-  </body>
+<head>
+    <title>Upload Image</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container text-center">
+            <br><br>
+        <h1>Server Online</h1>
+            <br><br><br>
+        <h3>Aadhaar Card OCR</h3>
+            <br><br>
+
+        <a href="{{ url_for('index_page') }}" class="btn btn-outline-dark">HOME</a>
+
+            <br><br><br><br><br>
+        <a href="{{ url_for('details_page') }}" class="btn btn-outline-dark">Click here for Aadhaar OCR</a>
+            <br><br><br>
+    </div>
+</body>
 </html>
