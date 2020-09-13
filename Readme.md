@@ -10,7 +10,6 @@ It uses some open source project to work properly :
 
 Note : This Project is tested and developed on Linux (Linux Mint) and Python 3.6
 
-
 ---
 
 
@@ -66,7 +65,13 @@ main.py :  File for starting the server
 └───routes
 │   └───/image/upload : processing the card image (ocr + face embeddings)
 │   │
-│   └───/live : Detect and Recognise face live (if any embeddings saved)
+│   └───/live : Detect and Recognise face live (to be removed, video feed in separate window)
+│   |   
+│   └───/browse : video stream from webcam
+│   |   
+│   └───/details : renders the form page
+│   |   
+│   └───/feed : renders the page with video stream
 │   |   
 │   └───/ : home path, renders index page
 ```
@@ -75,6 +80,10 @@ main.py :  File for starting the server
 ```utils.py``` : utils for MTCNN based face detection on Card
 
 ```processing.py``` : utils for Aadhaar OCR
+
+```model.py``` : tensorflow configuration and model initiation
+
+```camera.py``` : code for in-browser video feed
 
 ```requirements.txt``` : python Dependencies for this Project
 
@@ -119,6 +128,6 @@ this should start a server at port 5000
 
 
 - [ ] Live video feed extraction
-- [ ] In browser video feed
 - [ ] Improve CSS/HTML
 - [ ] Refactor Code
+- [x] In browser video feed
