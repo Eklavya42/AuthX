@@ -3,7 +3,7 @@ import tensorflow as tf
 import os
 import datetime
 import json
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, Response
 from processing import recognise_text, crop_aadhar, get_address, get_labels_from_aadhar
 from scipy.misc import imread
 from lib.src.align import detect_face  # for MTCNN face detection
@@ -22,6 +22,22 @@ from utils import (
     remove_file_extension,
     save_image
 )
+
+
+from model import (
+facenet_model,
+image_size,
+config,
+images_placeholder,
+embeddings,
+phase_train_placeholder,
+facenet_persistent_session,
+pnet,rnet,onet
+)
+
+
+from camera import VideoCamera
+
 # import warnings
 # warnings.filterwarnings("ignore")
 
@@ -259,39 +275,40 @@ def face_detect_live():
             status="No embedding files detected! Please upload image files for embedding!"
         )
 
+
+
+@app.route("/browse",methods =['GET', 'POST'])
+def video_feed():
+    return Response(gen(VideoCamera()),
+                        mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+
+
 # route to upload images of id cards and the form
 @app.route("/details")
 def details_page():
     """Renders the 'card-form.html' page for manual image file uploads."""
     return render_template(template_name_or_list="card-from.html")
 
+@app.route("/feed")
+def video_feed_live():
+    """Renders the 'browser.html' page."""
+    return render_template(template_name_or_list="browser.html")
 
 @app.route("/")
 def index_page():
     """Renders the 'index.html' page."""
     return render_template(template_name_or_list="index.html")
 
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
 
 if __name__ == '__main__':
-    """Server and FaceNet Tensorflow configuration."""
-
-    # Load FaceNet model and configure placeholders for forward pass into the FaceNet model to calculate embeddings
-    model_path = 'model/20170512-110547/20170512-110547.pb'
-    facenet_model = load_model(model_path)
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True
-    image_size = 160
-    images_placeholder = tf.get_default_graph().get_tensor_by_name("input:0")
-    embeddings = tf.get_default_graph().get_tensor_by_name("embeddings:0")
-    phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("phase_train:0")
-
-    # Initiate persistent FaceNet model in memory
-    facenet_persistent_session = tf.Session(graph=facenet_model, config=config)
-
-    # Create Multi-Task Cascading Convolutional (MTCNN) neural networks for Face Detection
-    pnet, rnet, onet = detect_face.create_mtcnn(sess=facenet_persistent_session, model_path=None)
-
-    # Start flask application on waitress WSGI server
-    # serve(app=app, host='0.0.0.0', port=5000)
+    """Server Run"""
 
     app.run(host='0.0.0.0', debug=True)
